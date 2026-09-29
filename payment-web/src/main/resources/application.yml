@@ -1,0 +1,29 @@
+server:
+  port: 8080
+spring:
+  application:
+    name: pay-parent
+  datasource:
+    url: jdbc:mysql://localhost:3306/pay_parent?useUnicode=true&characterEncoding=utf8&serverTimezone=UTC
+    username: root
+    password: 123456
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  redis:
+    host: localhost
+    port: 6379
+    password: ""
+
+payment:
+  wechat:
+    enabled: true
+    app-id: dummy-wechat-app-id
+    mch-id: dummy-wechat-mch-id
+    api-v3-key: dummy-wechat-key
+  alipay:
+    enabled: true
+    app-id: dummy-alipay-app-id
+    private-key: dummy-private-key
+  paypal:
+    enabled: true
+    client-id: dummy-paypal-client-id
+    client-secret: dummy-paypal-client-secret

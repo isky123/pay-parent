@@ -1,0 +1,28 @@
+version: '3.8'
+services:
+  mysql:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456
+      MYSQL_DATABASE: pay_parent
+    ports:
+      - "3306:3306"
+  redis:
+    image: redis:6
+    ports:
+      - "6379:6379"
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+  app:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    depends_on:
+      - mysql
+      - redis
+      - rabbitmq
+    ports:
+      - "8080:8080"

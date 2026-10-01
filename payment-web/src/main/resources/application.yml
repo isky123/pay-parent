@@ -1,17 +1,39 @@
 server:
   port: 8080
+  servlet:
+    context-path: /
+
 spring:
   application:
     name: pay-parent
   datasource:
-    url: jdbc:mysql://localhost:3306/pay_parent?useUnicode=true&characterEncoding=utf8&serverTimezone=UTC
+    url: jdbc:mysql://localhost:3306/pay_parent?useUnicode=true&characterEncoding=utf8&serverTimezone=UTC&allowPublicKeyRetrieval=true&useSSL=false
     username: root
     password: 123456
     driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 2
   redis:
     host: localhost
     port: 6379
     password: ""
+    timeout: 2000ms
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+  jpa:
+    show-sql: false
+  mvc:
+    static-path-pattern: /static/**
+
+mybatis:
+  mapper-locations: classpath*:mapper/**/*.xml
+  configuration:
+    map-underscore-to-camel-case: true
+    default-statement-timeout: 30
 
 payment:
   wechat:
@@ -27,3 +49,10 @@ payment:
     enabled: true
     client-id: dummy-paypal-client-id
     client-secret: dummy-paypal-client-secret
+
+logging:
+  level:
+    root: INFO
+    com.pay: DEBUG
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"

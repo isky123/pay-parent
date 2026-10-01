@@ -1,50 +1,262 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pay Parent 测试页</title>
+    <title>聚合支付系统测试页</title>
     <style>
-        body { font-family: Arial, sans-serif; background: #f5f7fb; margin: 0; padding: 32px; }
-        .container { max-width: 900px; margin: 0 auto; background: white; border-radius: 12px; padding: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); }
-        select, input, button { padding: 10px 12px; border-radius: 8px; border: 1px solid #dfe7f1; margin: 8px 0; }
-        button { background: #2563eb; color: white; border: none; cursor: pointer; }
-        .row { display: flex; gap: 12px; flex-wrap: wrap; }
-        .result { margin-top: 20px; padding: 16px; background: #0f172a; color: #e2e8f0; border-radius: 8px; white-space: pre-wrap; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 600px;
+            width: 100%;
+            padding: 40px;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            color: #333;
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+        .header p {
+            color: #666;
+            font-size: 14px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s;
+            font-family: inherit;
+        }
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        .button-group {
+            display: flex;
+            gap: 12px;
+            margin-top: 30px;
+        }
+        button {
+            flex: 1;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        #payBtn {
+            background: #667eea;
+            color: white;
+        }
+        #payBtn:hover {
+            background: #5568d3;
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+        #queryBtn {
+            background: #f0f0f0;
+            color: #333;
+        }
+        #queryBtn:hover {
+            background: #e0e0e0;
+        }
+        .result-section {
+            margin-top: 30px;
+            padding-top: 30px;
+            border-top: 1px solid #eee;
+        }
+        .result-title {
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 12px;
+            font-size: 14px;
+        }
+        #resultBox {
+            background: #f5f5f5;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 16px;
+            font-family: 'Monaco', 'Courier New', monospace;
+            font-size: 12px;
+            color: #333;
+            white-space: pre-wrap;
+            word-break: break-all;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .status {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+        }
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        .status.loading {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
     </style>
 </head>
 <body>
 <div class="container">
-    <h2>聚合支付测试页面</h2>
-    <div class="row">
-        <label>支付渠道</label>
-        <select id="channel">
-            <option value="WECHAT">微信支付</option>
-            <option value="ALIPAY">支付宝</option>
-            <option value="PAYPAL">PayPal</option>
-            <option value="APPLE_PAY">Apple Pay</option>
-            <option value="TONGLIAN">通联支付</option>
-            <option value="LAKALA">拉卡拉</option>
-        </select>
+    <div class="header">
+        <h1>💳 聚合支付系统</h1>
+        <p>支持 微信、支付宝、PayPal、Apple Pay 等多个渠道</p>
     </div>
-    <div class="row">
-        <label>订单号</label>
-        <input id="orderNo" value="ORD202609290001" />
+
+    <form id="paymentForm">
+        <div class="form-group">
+            <label>支付渠道</label>
+            <select id="channel">
+                <option value="WECHAT">微信支付</option>
+                <option value="ALIPAY">支付宝</option>
+                <option value="PAYPAL">PayPal</option>
+                <option value="APPLE_PAY">Apple Pay</option>
+                <option value="TONGLIAN">通联支付 (预留)</option>
+                <option value="LAKALA">拉卡拉 (预留)</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>订单号</label>
+            <input id="orderNo" type="text" value="ORD202609290001" placeholder="输入订单号">
+        </div>
+
+        <div class="form-group">
+            <label>金额 (元)</label>
+            <input id="amount" type="number" step="0.01" value="99.90" placeholder="输入金额">
+        </div>
+
+        <div class="form-group">
+            <label>商品名称</label>
+            <input id="subject" type="text" value="测试商品" placeholder="输入商品名称">
+        </div>
+
+        <div class="button-group">
+            <button type="button" id="payBtn">📄 发起支付</button>
+            <button type="button" id="queryBtn">🔍 查询订单</button>
+        </div>
+    </form>
+
+    <div class="result-section">
+        <div class="result-title">执行结果</div>
+        <div id="resultBox">等待请求...</div>
     </div>
-    <div class="row">
-        <label>金额</label>
-        <input id="amount" value="99.90" />
-    </div>
-    <div class="row">
-        <label>商品名</label>
-        <input id="subject" value="测试商品" />
-    </div>
-    <div class="row">
-        <button id="submitBtn">发起支付</button>
-    </div>
-    <div class="result" id="resultBox">等待请求...</div>
 </div>
 
-<script src="/js/paymentTest.js"></script>
+<script>
+    const payBtn = document.getElementById('payBtn');
+    const queryBtn = document.getElementById('queryBtn');
+    const resultBox = document.getElementById('resultBox');
+    const form = document.getElementById('paymentForm');
+
+    payBtn.addEventListener('click', async () => {
+        const channel = document.getElementById('channel').value;
+        const orderNo = document.getElementById('orderNo').value;
+        const amount = Number(document.getElementById('amount').value);
+        const subject = document.getElementById('subject').value;
+
+        if (!orderNo || !amount || !subject) {
+            showResult('错误：请填书所有字段', 'error');
+            return;
+        }
+
+        showResult('正在发起支付...', 'loading');
+
+        try {
+            const response = await fetch('/api/v1/payments', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Idempotency-Key': Date.now().toString()
+                },
+                body: JSON.stringify({
+                    merchantOrderNo: orderNo,
+                    amount: amount,
+                    currency: 'CNY',
+                    subject: subject,
+                    channel: channel,
+                    clientIp: '127.0.0.1',
+                    returnUrl: 'https://example.com/return',
+                    notifyUrl: 'https://example.com/notify'
+                })
+            });
+
+            const data = await response.json();
+            showResult(JSON.stringify(data, null, 2), data.success ? 'success' : 'error');
+        } catch (error) {
+            showResult('错误：' + error.message, 'error');
+        }
+    });
+
+    queryBtn.addEventListener('click', async () => {
+        const channel = document.getElementById('channel').value;
+        const orderNo = document.getElementById('orderNo').value;
+
+        if (!orderNo) {
+            showResult('错误：请填写订单号', 'error');
+            return;
+        }
+
+        showResult('正在查询...', 'loading');
+
+        try {
+            const response = await fetch(`/api/v1/payments/${orderNo}?channel=${channel}`);
+            const data = await response.json();
+            showResult(JSON.stringify(data, null, 2), data.success ? 'success' : 'error');
+        } catch (error) {
+            showResult('错误：' + error.message, 'error');
+        }
+    });
+
+    function showResult(content, status) {
+        resultBox.textContent = content;
+        resultBox.className = 'status ' + status;
+        setTimeout(() => {
+            resultBox.className = '';
+        }, 3000);
+    }
+</script>
 </body>
 </html>
